@@ -1,0 +1,27 @@
+pipeline{
+       agent any
+       stages{
+          stage('build'){
+               steps{
+                    sh 'mvn clean install'
+                    echo 'test stage successful'
+                    post{
+                        always {
+                                junit 'target/sunfire-reports/*.xml'
+                              }
+                    }
+              }
+         }
+         stage('deploy'){
+               steps{
+                   sh 'mvn deploy'
+                   echo 'deployment successful'
+              }
+          }
+     }
+     post {
+        failure {
+              echo 'pipeline failed'
+        }
+     }
+}
